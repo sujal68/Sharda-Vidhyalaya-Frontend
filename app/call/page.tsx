@@ -66,7 +66,7 @@ function CallContent() {
         )}
         
         <div className="text-6xl mb-4">
-          {callType === 'video' ? '📹' : '📞'}
+          <i className={callType === 'video' ? 'ri-vidicon-line' : 'ri-phone-line'}></i>
         </div>
         
         <h2 className="h3 mb-2">{callStatus}</h2>
@@ -79,7 +79,7 @@ function CallContent() {
             onClick={endCall}
             className="w-16 h-16 rounded-full bg-red-500 hover:bg-red-600 text-white flex items-center justify-center text-2xl shadow-lg"
           >
-            📵
+            <i className="ri-phone-off-line text-2xl"></i>
           </button>
           
           <button
@@ -91,7 +91,7 @@ function CallContent() {
             }}
             className="w-16 h-16 rounded-full glass hover:bg-white/80 dark:hover:bg-slate-800/80 flex items-center justify-center text-2xl"
           >
-            🎤
+            <i className="ri-mic-line text-2xl"></i>
           </button>
           
           {callType === 'video' && (
@@ -104,7 +104,7 @@ function CallContent() {
               }}
               className="w-16 h-16 rounded-full glass hover:bg-white/80 dark:hover:bg-slate-800/80 flex items-center justify-center text-2xl"
             >
-              📹
+              <i className="ri-vidicon-line text-2xl"></i>
             </button>
           )}
         </div>

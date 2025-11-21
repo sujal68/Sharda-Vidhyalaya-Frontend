@@ -42,3 +42,39 @@ export const useThemeStore = create<ThemeState>((set) => ({
     return { isDark: newTheme };
   }),
 }));
+
+interface SidebarState {
+  isCollapsed: boolean;
+  toggleSidebar: () => void;
+}
+
+export const useSidebarStore = create<SidebarState>((set) => ({
+  isCollapsed: false,
+  toggleSidebar: () => set((state) => ({ isCollapsed: !state.isCollapsed })),
+}));
+
+interface LanguageState {
+  language: 'en' | 'hi' | 'gu';
+  setLanguage: (lang: 'en' | 'hi' | 'gu') => void;
+}
+
+export const useLanguageStore = create<LanguageState>((set) => ({
+  language: typeof window !== 'undefined' ? (localStorage.getItem('language') as 'en' | 'hi' | 'gu') || 'en' : 'en',
+  setLanguage: (lang) => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('language', lang);
+    }
+    set({ language: lang });
+  },
+}));
+
+export const useTranslation = () => {
+  const { language } = useLanguageStore();
+  const translations = require('./translations').translations;
+  
+  const t = (key: string) => {
+    return translations[language]?.[key] || translations.en[key] || key;
+  };
+  
+  return { t, language };
+};

@@ -111,11 +111,11 @@ export default function Notifications() {
 
   const getIcon = (type: string) => {
     switch(type) {
-      case 'message': return '💬';
-      case 'connection': return '👥';
-      case 'assignment': return '📝';
-      case 'marks': return '📊';
-      default: return '🔔';
+      case 'message': return 'ri-message-3-line';
+      case 'connection': return 'ri-group-line';
+      case 'assignment': return 'ri-file-list-3-line';
+      case 'marks': return 'ri-bar-chart-line';
+      default: return 'ri-notification-3-line';
     }
   };
 
@@ -169,7 +169,7 @@ export default function Notifications() {
             <div className="space-y-3">
               {filteredNotifications.length === 0 ? (
                 <div className="text-center py-12 text-muted">
-                  <div className="text-6xl mb-4">🔔</div>
+                  <i className="ri-notification-3-line text-6xl mb-4 text-sky-500 dark:text-blue-400"></i>
                   <p>No notifications yet</p>
                 </div>
               ) : (
@@ -190,7 +190,9 @@ export default function Notifications() {
                         : 'bg-sky-50 dark:bg-blue-900/20 border-l-4 border-sky-500 dark:border-blue-700'
                     }`}
                   >
-                    <div className="text-3xl">{getIcon(notif.type)}</div>
+                    <div className="w-12 h-12 rounded-full bg-sky-100 dark:bg-blue-900 flex items-center justify-center">
+                      <i className={`${getIcon(notif.type)} text-2xl text-sky-600 dark:text-blue-400`}></i>
+                    </div>
                     
                     <div className="flex-1">
                       <div className="flex items-start justify-between">
@@ -222,7 +224,7 @@ export default function Notifications() {
                             onClick={() => deleteNotification(notif._id)}
                             className="w-8 h-8 rounded-lg glass hover:bg-red-100 dark:hover:bg-red-900/20 flex items-center justify-center"
                           >
-                            🗑️
+                            <i className="ri-delete-bin-line"></i>
                           </button>
                         </div>
                       </div>

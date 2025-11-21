@@ -150,7 +150,7 @@ export default function Messages() {
                     : 'text-muted'
                 }`}
               >
-                💬 Chats
+                <i className="ri-message-3-line"></i> Chats
               </button>
               <button
                 onClick={() => setActiveTab('requests')}
@@ -160,7 +160,7 @@ export default function Messages() {
                     : 'text-muted'
                 }`}
               >
-                📩 Requests {requests.length > 0 && `(${requests.length})`}
+                <i className="ri-mail-line"></i> Requests {requests.length > 0 && `(${requests.length})`}
               </button>
               <button
                 onClick={() => setActiveTab('search')}
@@ -170,7 +170,7 @@ export default function Messages() {
                     : 'text-muted'
                 }`}
               >
-                🔍 Connect
+                <i className="ri-search-line"></i> Connect
               </button>
             </div>
 
@@ -240,7 +240,7 @@ export default function Messages() {
                             className="w-10 h-10 rounded-full glass flex items-center justify-center hover:bg-sky-100 dark:hover:bg-blue-900 transition-all"
                             title="Voice Call"
                           >
-                            📞
+                            <i className="ri-phone-line text-xl"></i>
                           </button>
                           <button
                             onClick={() => {
@@ -254,7 +254,7 @@ export default function Messages() {
                             className="w-10 h-10 rounded-full glass flex items-center justify-center hover:bg-sky-100 dark:hover:bg-blue-900 transition-all"
                             title="Video Call"
                           >
-                            📹
+                            <i className="ri-vidicon-line text-xl"></i>
                           </button>
                         </div>
                       </div>
@@ -288,7 +288,7 @@ export default function Messages() {
                                     }}
                                     className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center hover:bg-white/30 transition-all"
                                   >
-                                    {playingAudio === msg._id ? '⏸️' : '▶️'}
+                                    <i className={playingAudio === msg._id ? 'ri-pause-fill' : 'ri-play-fill'}></i>
                                   </button>
                                   <div className="flex-1 flex items-center gap-0.5 h-8">
                                     {[...Array(20)].map((_, i) => (
@@ -312,7 +312,7 @@ export default function Messages() {
                                   <span className="opacity-70">
                                     {new Date(msg.createdAt).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
                                   </span>
-                                  <span>{msg.isRead ? '✓✓' : '✓'}</span>
+                                  <i className={msg.isRead ? 'ri-check-double-line' : 'ri-check-line'}></i>
                                 </div>
                               )}
                             </div>
@@ -331,10 +331,10 @@ export default function Messages() {
                               }}
                               className="w-8 h-8 rounded-full bg-sky-500 dark:bg-blue-700 text-white flex items-center justify-center"
                             >
-                              ▶️
+                              <i className="ri-play-fill"></i>
                             </button>
                             <div className="flex-1 h-8 bg-sky-200 dark:bg-blue-900 rounded-full flex items-center px-2">
-                              <div className="text-xs text-muted">🎤 Voice message - {recordDuration}s</div>
+                              <div className="text-xs text-muted"><i className="ri-mic-line"></i> Voice message - {recordDuration}s</div>
                             </div>
                             <button
                               onClick={async () => {
@@ -366,7 +366,7 @@ export default function Messages() {
                               }}
                               className="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center"
                             >
-                              ✔️
+                              <i className="ri-check-line"></i>
                             </button>
                             <button
                               onClick={() => {
@@ -376,7 +376,7 @@ export default function Messages() {
                               }}
                               className="w-8 h-8 rounded-full bg-red-500 text-white flex items-center justify-center"
                             >
-                              🗑️
+                              <i className="ri-delete-bin-line"></i>
                             </button>
                           </div>
                         ) : (
@@ -420,7 +420,7 @@ export default function Messages() {
                               }`}
                               title="Voice Message"
                             >
-                              🎤
+                              <i className="ri-mic-line text-xl"></i>
                             </button>
                             <input
                               type="text"
@@ -434,7 +434,7 @@ export default function Messages() {
                               onClick={sendMessage}
                               className="w-10 h-10 rounded-full bg-sky-500 dark:bg-blue-700 text-white flex items-center justify-center hover:scale-110 transition-transform"
                             >
-                              ✈️
+                              <i className="ri-send-plane-fill"></i>
                             </button>
                           </div>
                         )}

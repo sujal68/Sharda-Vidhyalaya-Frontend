@@ -1,5 +1,5 @@
 'use client';
-import { useAuthStore, useThemeStore } from '@/lib/store';
+import { useAuthStore, useThemeStore, useSidebarStore, useTranslation } from '@/lib/store';
 import { useRouter } from 'next/navigation';
 import Logo from './Logo';
 import { useState, useEffect } from 'react';
@@ -41,14 +41,14 @@ function NotificationBell() {
   if (!mounted) {
     return (
       <div className="w-10 h-10 rounded-lg glass flex items-center justify-center">
-        🔔
+        <i className="ri-notification-3-line text-xl"></i>
       </div>
     );
   }
 
   return (
     <Link href="/notifications" className="relative w-10 h-10 rounded-lg glass flex items-center justify-center hover:bg-white/80 dark:hover:bg-slate-800/80 transition-all">
-      🔔
+      <i className="ri-notification-3-line text-xl"></i>
       {unreadCount > 0 && (
         <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-bold">
           {unreadCount > 9 ? '9+' : unreadCount}
@@ -61,7 +61,16 @@ function NotificationBell() {
 export default function Navbar() {
   const { user, logout } = useAuthStore();
   const { isDark, toggleTheme } = useThemeStore();
+  const { isCollapsed, toggleSidebar } = useSidebarStore();
+  const { t } = useTranslation();
   const router = useRouter();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
 
   const handleLogout = () => {
     logout();
@@ -73,6 +82,13 @@ export default function Navbar() {
       <div className="container-12">
         <div className="flex items-center justify-between h-16 md:h-20">
           <div className="flex items-center gap-2 md:gap-3">
+            <button
+              onClick={toggleSidebar}
+              className="hidden md:flex w-10 h-10 rounded-lg glass items-center justify-center hover:bg-white/80 dark:hover:bg-slate-800/80 transition-all"
+              title="Toggle Sidebar"
+            >
+              <i className={`text-xl transition-transform duration-300 ${isCollapsed ? 'ri-menu-unfold-line' : 'ri-menu-fold-line'}`}></i>
+            </button>
             <Logo className="w-8 h-8 md:w-10 md:h-10" />
             <div>
               <h1 className="text-base md:text-xl font-bold text-sky-600 dark:text-blue-400">Sharda Vidhyalaya</h1>
@@ -81,9 +97,22 @@ export default function Navbar() {
           </div>
           
           <div className="flex items-center gap-2 md:gap-4">
-            <div className="text-right mr-2 md:mr-4 hidden sm:block">
-              <p className="font-semibold text-sm md:text-base">{user?.name}</p>
-              <p className="text-xs text-muted capitalize">{user?.role}</p>
+            <div className="flex items-center gap-3 mr-2 md:mr-4 hidden sm:flex">
+              <div className="text-right">
+                <p className="font-semibold text-sm md:text-base">{user?.name}</p>
+                <p className="text-xs text-muted capitalize">{user?.role}</p>
+              </div>
+              {(user as any)?.profilePic ? (
+                <img 
+                  src={(user as any).profilePic} 
+                  alt="Profile" 
+                  className="w-10 h-10 rounded-full object-cover border-2 border-sky-200 dark:border-blue-800"
+                />
+              ) : (
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-sky-400 to-blue-600 flex items-center justify-center text-white font-bold text-sm border-2 border-sky-200 dark:border-blue-800">
+                  {user?.name?.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)}
+                </div>
+              )}
             </div>
             
             <NotificationBell />
@@ -92,11 +121,11 @@ export default function Navbar() {
               onClick={toggleTheme}
               className="w-10 h-10 rounded-lg glass flex items-center justify-center hover:bg-white/80 dark:hover:bg-slate-800/80 transition-all"
             >
-              {isDark ? '☀️' : '🌙'}
+              <i className={isDark ? 'ri-sun-line text-xl' : 'ri-moon-line text-xl'}></i>
             </button>
             
             <button onClick={handleLogout} className="btn-primary text-sm md:text-base px-3 py-2 md:px-6 md:py-3">
-              Logout
+              {t('logout')}
             </button>
           </div>
         </div>

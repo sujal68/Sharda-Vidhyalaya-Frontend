@@ -245,13 +245,13 @@ export default function Assignments() {
 
                   <div className="flex items-center gap-4 text-sm mb-4">
                     <span className="flex items-center gap-1">
-                      📚 {assignment.subject}
+                      <i className="ri-book-line"></i> {assignment.subject}
                     </span>
                     <span className="flex items-center gap-1">
-                      🏫 Class {assignment.class}-{assignment.section}
+                      <i className="ri-school-line"></i> Class {assignment.class}-{assignment.section}
                     </span>
                     <span className="flex items-center gap-1">
-                      📊 {assignment.totalMarks} marks
+                      <i className="ri-bar-chart-line"></i> {assignment.totalMarks} marks
                     </span>
                   </div>
 
@@ -266,13 +266,13 @@ export default function Assignments() {
                             onClick={() => handleEdit(assignment)}
                             className="text-xs px-2 py-1 rounded bg-sky-100 dark:bg-blue-900 text-sky-700 dark:text-blue-300 hover:opacity-80"
                           >
-                            ✏️
+                            <i className="ri-edit-line"></i>
                           </button>
                           <button
                             onClick={() => handleDelete(assignment._id)}
                             className="text-xs px-2 py-1 rounded bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300 hover:opacity-80"
                           >
-                            🗑️
+                            <i className="ri-delete-bin-line"></i>
                           </button>
                         </div>
                       )}
@@ -282,7 +282,7 @@ export default function Assignments() {
                       submission ? (
                         <div className="flex items-center gap-2">
                           <span className="text-sm text-green-600 dark:text-green-400">
-                            ✓ Submitted
+                            <i className="ri-check-line"></i> Submitted
                           </span>
                           {submission.marks && (
                             <span className="px-2 py-1 rounded bg-sky-100 dark:bg-blue-900 text-sky-700 dark:text-blue-300 text-sm">
@@ -313,7 +313,7 @@ export default function Assignments() {
 
           {assignments.length === 0 && (
             <div className="card text-center py-12">
-              <div className="text-6xl mb-4">📝</div>
+              <i className="ri-file-list-3-line text-6xl mb-4 text-sky-500 dark:text-blue-400"></i>
               <p className="text-muted">No assignments available</p>
             </div>
           )}

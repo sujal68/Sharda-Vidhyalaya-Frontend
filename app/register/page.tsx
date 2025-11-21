@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import api from '@/lib/api';
 import toast from 'react-hot-toast';
 
@@ -35,9 +36,14 @@ export default function Register() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-sky-400 to-blue-600 dark:from-blue-900 dark:to-blue-950 p-4">
       <div className="card max-w-2xl w-full">
-        <h1 className="text-3xl font-bold text-center mb-6 text-sky-600 dark:text-blue-400">
-          Register - Sharda Vidhyalaya
-        </h1>
+        <div className="text-center mb-6">
+          <div className="w-20 h-20 mx-auto mb-4 bg-white dark:bg-slate-800 rounded-full flex items-center justify-center p-2 shadow-lg">
+            <Image src="/logo.PNG" alt="Sharda Vidhyalaya" width={64} height={64} className="rounded-full" priority />
+          </div>
+          <h1 className="text-3xl font-bold text-sky-600 dark:text-blue-400">
+            Register - Sharda Vidhyalaya
+          </h1>
+        </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

@@ -22,11 +22,11 @@
 @layer components {
   /* 12-Column Grid System */
   .container-12 {
-    @apply max-w-[1440px] mx-auto px-6;
+    @apply max-w-[1440px] mx-auto px-3 sm:px-4 md:px-6;
   }
 
   .grid-12 {
-    @apply grid grid-cols-12 gap-6;
+    @apply grid grid-cols-12 gap-3 sm:gap-4 md:gap-6;
   }
 
   .col-1 { @apply col-span-12 md:col-span-1; }
@@ -44,7 +44,7 @@
 
   /* Premium Card */
   .card {
-    @apply bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm rounded-xl shadow-lg border border-gray-200/50 dark:border-slate-800/50 p-6 transition-all duration-300 hover:shadow-xl hover:-translate-y-1;
+    @apply bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm rounded-lg sm:rounded-xl shadow-lg border border-gray-200/50 dark:border-slate-800/50 p-4 sm:p-5 md:p-6 transition-all duration-300 hover:shadow-xl hover:-translate-y-1;
   }
 
   /* Stat Card */
@@ -54,12 +54,12 @@
 
   /* Button Primary */
   .btn-primary {
-    @apply bg-sky-500 hover:bg-sky-600 dark:bg-blue-700 dark:hover:bg-blue-800 text-white px-6 py-3 rounded-lg font-semibold shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5;
+    @apply bg-sky-500 hover:bg-sky-600 dark:bg-blue-700 dark:hover:bg-blue-800 text-white px-3 py-2 sm:px-4 sm:py-2.5 md:px-6 md:py-3 rounded-lg text-sm sm:text-base font-semibold shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5;
   }
 
   /* Input */
   .input {
-    @apply w-full px-4 py-3 border border-gray-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-900 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-sky-500 dark:focus:ring-blue-700 outline-none transition-all;
+    @apply w-full px-3 py-2 sm:px-4 sm:py-2.5 md:py-3 text-sm sm:text-base border border-gray-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-900 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-sky-500 dark:focus:ring-blue-700 outline-none transition-all;
   }
 
   /* Section Spacing */
@@ -74,19 +74,19 @@
 
   /* Heading Hierarchy */
   .h1 {
-    @apply text-4xl md:text-5xl font-bold tracking-tight;
+    @apply text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight;
   }
 
   .h2 {
-    @apply text-3xl md:text-4xl font-bold tracking-tight;
+    @apply text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight;
   }
 
   .h3 {
-    @apply text-2xl md:text-3xl font-semibold;
+    @apply text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold;
   }
 
   .h4 {
-    @apply text-xl md:text-2xl font-semibold;
+    @apply text-base sm:text-lg md:text-xl lg:text-2xl font-semibold;
   }
 
   /* Text Muted */
@@ -96,7 +96,20 @@
 }
 
 @layer utilities {
-  /* Scrollbar Styling */
+  /* Scrollbar Auto-Hide */
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+  }
+  
+  .scrollbar-thin:hover {
+    scrollbar-color: #d1d5db transparent;
+  }
+  
+  .dark .scrollbar-thin:hover {
+    scrollbar-color: #475569 transparent;
+  }
+  
   .scrollbar-thin::-webkit-scrollbar {
     width: 6px;
   }
@@ -105,14 +118,21 @@
     background: transparent;
   }
   
-  .scrollbar-thumb-gray-300::-webkit-scrollbar-thumb {
-    background: #d1d5db;
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: transparent;
     border-radius: 10px;
+    transition: background 0.3s ease, opacity 0.3s ease;
+    opacity: 0;
   }
   
-  .dark .scrollbar-thumb-slate-600::-webkit-scrollbar-thumb {
+  .scrollbar-thin:hover::-webkit-scrollbar-thumb {
+    background: #d1d5db;
+    opacity: 1;
+  }
+  
+  .dark .scrollbar-thin:hover::-webkit-scrollbar-thumb {
     background: #475569;
-    border-radius: 10px;
+    opacity: 1;
   }
 
   /* Animation Classes */

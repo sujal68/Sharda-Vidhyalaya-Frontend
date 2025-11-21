@@ -19,8 +19,8 @@ export default function StatCard({ icon, label, value, color = 'sky' }: StatCard
         <p className="text-sm text-muted mb-1">{label}</p>
         <p className="text-3xl font-bold">{value}</p>
       </div>
-      <div className={`w-16 h-16 rounded-xl flex items-center justify-center text-3xl ${colorClasses[color as keyof typeof colorClasses]}`}>
-        {icon}
+      <div className={`w-16 h-16 rounded-xl flex items-center justify-center ${colorClasses[color as keyof typeof colorClasses]}`}>
+        <i className={`${icon} text-3xl`}></i>
       </div>
     </div>
   );
