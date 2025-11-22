@@ -122,7 +122,12 @@ function ForgotPasswordModal({ show, setShow }: { show: boolean; setShow: (show:
 }
 
 export default function Login() {
+  const [mode, setMode] = useState<'login' | 'register'>('login');
   const [step, setStep] = useState<'login' | 'otp'>('login');
+  const [name, setName] = useState('');
+  const [role, setRole] = useState<'student' | 'teacher'>('student');
+  const [classValue, setClassValue] = useState('');
+  const [section, setSection] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [otp, setOtp] = useState('');
@@ -193,7 +198,7 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex">
+    <div className="h-screen flex overflow-hidden">
       {showForgotPassword && <ForgotPasswordModal show={showForgotPassword} setShow={setShowForgotPassword} />}
 
       {/* Left Side - School Info with Bubbles */}
@@ -292,28 +297,79 @@ export default function Login() {
       </div>
 
       {/* Right Side - Login Form */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-white dark:bg-slate-950">
-        <div className="w-full max-w-md space-y-8">
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-4 bg-white dark:bg-slate-950 overflow-y-auto">
+        <div className="w-full max-w-md space-y-4">
           {/* Mobile Logo */}
           <div className="lg:hidden text-center">
-            <div className="w-20 h-20 mx-auto mb-4 bg-sky-100 dark:bg-blue-900 rounded-full flex items-center justify-center p-2">
-              <Image src="/logo.png" alt="Logo" width={64} height={64} className="rounded-full" priority />
+            <div className="w-14 h-14 mx-auto mb-2 bg-sky-100 dark:bg-blue-900 rounded-full flex items-center justify-center p-1">
+              <Image src="/logo.png" alt="Logo" width={48} height={48} className="rounded-full" priority />
             </div>
-            <h1 className="text-3xl font-bold text-sky-600 dark:text-blue-400">Sharda Vidhyalaya</h1>
-            <p className="text-muted mt-2">School Management System</p>
+            <h1 className="text-xl font-bold text-sky-600 dark:text-blue-400">Sharda Vidhyalaya</h1>
+            <p className="text-muted text-xs mt-1">School Management System</p>
           </div>
 
           <div>
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
-              {step === 'login' ? 'Welcome Back!' : 'Verify OTP'}
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+              {mode === 'login' ? (step === 'login' ? 'Welcome Back!' : 'Verify OTP') : 'Create Account'}
             </h2>
-            <p className="text-muted mt-2">
-              {step === 'login' ? 'Please login to your account' : 'Enter the OTP sent to your email'}
+            <p className="text-muted text-sm mt-1">
+              {mode === 'login' ? (step === 'login' ? 'Please login to your account' : 'Enter the OTP sent to your email') : 'Register for a new account'}
             </p>
           </div>
 
-          {step === 'login' ? (
-            <form onSubmit={handleLogin} className="space-y-6">
+          {mode === 'register' ? (
+            <form onSubmit={async (e) => {
+              e.preventDefault();
+              setLoading(true);
+              try {
+                await api.post('/auth/register', { name, email, password, role, class: classValue, section });
+                toast.success('Registration successful! Please wait for admin approval.');
+                setMode('login');
+                setName('');
+                setPassword('');
+              } catch (error: any) {
+                toast.error(error.response?.data?.message || 'Registration failed');
+              } finally {
+                setLoading(false);
+              }
+            }} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium mb-2">Full Name</label>
+                <input type="text" value={name} onChange={(e) => setName(e.target.value)} className="input" placeholder="Enter your name" required />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2">Email Address</label>
+                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="input" placeholder="Enter your email" required />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2">Password</label>
+                <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="input" placeholder="Create password" required minLength={6} />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2">Role</label>
+                <select value={role} onChange={(e) => setRole(e.target.value as 'student' | 'teacher')} className="input">
+                  <option value="student">Student</option>
+                  <option value="teacher">Teacher</option>
+                </select>
+              </div>
+              {role === 'student' && (
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Class</label>
+                    <input type="text" value={classValue} onChange={(e) => setClassValue(e.target.value)} className="input" placeholder="e.g., 10" required />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Section</label>
+                    <input type="text" value={section} onChange={(e) => setSection(e.target.value)} className="input" placeholder="e.g., A" required />
+                  </div>
+                </div>
+              )}
+              <button type="submit" disabled={loading} className="btn-primary w-full">
+                {loading ? 'Registering...' : 'Register'}
+              </button>
+            </form>
+          ) : step === 'login' ? (
+            <form onSubmit={handleLogin} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium mb-2">Email Address</label>
                 <input
@@ -353,7 +409,7 @@ export default function Login() {
               </div>
             </form>
           ) : (
-            <form onSubmit={handleVerifyOTP} className="space-y-6">
+            <form onSubmit={handleVerifyOTP} className="space-y-4">
               <div className="text-center mb-4">
                 <p className="text-sm text-muted">
                   OTP sent to <span className="font-semibold text-sky-600 dark:text-blue-400">{email}</span>
@@ -408,10 +464,11 @@ export default function Login() {
             </form>
           )}
 
-          <div className="text-center pt-6 border-t border-gray-200 dark:border-slate-800">
-            <a href="/register" className="text-sm text-sky-600 dark:text-blue-400 hover:underline">
-              Don't have an account? <span className="font-semibold">Register here</span>
-            </a>
+          <div className="text-center pt-3 border-t border-gray-200 dark:border-slate-800">
+            <button onClick={() => setMode(mode === 'login' ? 'register' : 'login')} className="text-sm text-sky-600 dark:text-blue-400 hover:underline">
+              {mode === 'login' ? "Don't have an account? " : "Already have an account? "}
+              <span className="font-semibold">{mode === 'login' ? 'Register here' : 'Login here'}</span>
+            </button>
           </div>
         </div>
       </div>

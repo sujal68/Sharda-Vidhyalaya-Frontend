@@ -84,9 +84,10 @@ export default function Sidebar() {
       {/* Sidebar */}
       <aside 
         className={`
-          glass border-r border-gray-200/50 dark:border-slate-800/50 h-[calc(100vh-5rem)] relative
-          fixed md:sticky top-20 z-40 overflow-hidden transition-all duration-300
-          ${isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+          glass border-r border-gray-200/50 dark:border-slate-800/50 h-[calc(100vh-5rem)]
+          fixed top-20 left-0 z-40 transition-transform duration-300 ease-in-out
+          ${isOpen ? 'translate-x-0' : '-translate-x-full'}
+          md:translate-x-0 md:sticky md:top-20
         `}
         style={{ width: isCollapsed ? '80px' : `${sidebarWidth}px` }}
       >
@@ -99,7 +100,7 @@ export default function Sidebar() {
             <div className="absolute right-0 top-1/2 -translate-y-1/2 w-1 h-12 bg-sky-500 dark:bg-blue-700 rounded-l opacity-0 group-hover:opacity-100 transition-opacity" />
           </div>
         )}
-        <nav className="p-4 space-y-2 h-full overflow-y-auto scrollbar-thin">
+        <nav className="p-3 space-y-2 h-full overflow-y-auto scrollbar-thin">
           {links
             .filter(link => link.roles.includes(user?.role || ''))
             .map(link => (
@@ -107,15 +108,17 @@ export default function Sidebar() {
                 key={link.href}
                 href={link.href}
                 onClick={() => setIsOpen(false)}
-                className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
+                className={`flex items-center gap-4 px-3 py-3 rounded-xl transition-all group ${
                   pathname === link.href
-                    ? 'bg-sky-500 dark:bg-blue-700 text-white shadow-lg'
-                    : 'hover:bg-white/80 dark:hover:bg-slate-800/80'
+                    ? 'bg-sky-500 dark:bg-blue-600 text-white shadow-md'
+                    : 'hover:bg-slate-100 dark:hover:bg-slate-800/60'
                 }`}
               >
-                <i className={`${link.icon} text-xl`}></i>
+                <i className={`${link.icon} text-xl shrink-0`}></i>
                 {!isCollapsed && (
-                  <span className="font-medium">{t(link.labelKey)}</span>
+                  <span className="font-medium whitespace-nowrap overflow-hidden text-ellipsis">
+                    {t(link.labelKey)}
+                  </span>
                 )}
               </Link>
             ))}

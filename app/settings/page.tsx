@@ -145,17 +145,17 @@ export default function Settings() {
   if (!mounted) return null;
 
   return (
-    <div className="container-12 space-y-6 mt-6">
+    <div className="container-12 space-y-8 py-6 px-4">
       <div className="grid-12">
         <div className="col-12">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h1 className="h3 mb-2">{t('settings')}</h1>
-              <p className="text-muted">Manage your account settings and preferences</p>
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
+            <div className="flex-1">
+              <h1 className="h2 mb-2">{t('settings')}</h1>
+              <p className="text-muted text-sm leading-relaxed">Manage your account settings and preferences</p>
             </div>
             <button
               onClick={() => window.history.back()}
-              className="w-10 h-10 rounded-lg glass flex items-center justify-center hover:bg-gray-100 dark:hover:bg-slate-800 transition-all"
+              className="w-full sm:w-12 h-12 rounded-xl glass flex items-center justify-center hover:bg-gray-100 dark:hover:bg-slate-800 transition-all"
               title="Go Back"
             >
               <i className="ri-close-line text-2xl"></i>
@@ -166,10 +166,10 @@ export default function Settings() {
 
       <div className="grid-12">
         <div className="col-12">
-          <div className="flex gap-2 border-b border-gray-200 dark:border-slate-700 mb-6">
+          <div className="flex gap-2 border-b border-gray-200 dark:border-slate-700 mb-8 overflow-x-auto scrollbar-thin">
             <button
               onClick={() => setActiveTab('profile')}
-              className={`px-6 py-3 font-semibold transition-colors ${
+              className={`px-6 py-4 font-semibold transition-colors whitespace-nowrap ${
                 activeTab === 'profile'
                   ? 'text-sky-500 dark:text-blue-400 border-b-2 border-sky-500 dark:border-blue-400'
                   : 'text-muted hover:text-gray-900 dark:hover:text-white'
@@ -180,7 +180,7 @@ export default function Settings() {
             </button>
             <button
               onClick={() => setActiveTab('account')}
-              className={`px-6 py-3 font-semibold transition-colors ${
+              className={`px-6 py-4 font-semibold transition-colors whitespace-nowrap ${
                 activeTab === 'account'
                   ? 'text-sky-500 dark:text-blue-400 border-b-2 border-sky-500 dark:border-blue-400'
                   : 'text-muted hover:text-gray-900 dark:hover:text-white'
@@ -191,7 +191,7 @@ export default function Settings() {
             </button>
             <button
               onClick={() => setActiveTab('preferences')}
-              className={`px-6 py-3 font-semibold transition-colors ${
+              className={`px-6 py-4 font-semibold transition-colors whitespace-nowrap ${
                 activeTab === 'preferences'
                   ? 'text-sky-500 dark:text-blue-400 border-b-2 border-sky-500 dark:border-blue-400'
                   : 'text-muted hover:text-gray-900 dark:hover:text-white'
@@ -205,11 +205,11 @@ export default function Settings() {
 
         {activeTab === 'profile' && (
           <div className="col-12 lg:col-8">
-            <div className="card">
-              <h2 className="text-xl font-bold mb-6">Profile Information</h2>
+            <div className="card shadow-md shadow-black/10 rounded-xl">
+              <h2 className="text-2xl font-bold mb-8">Profile Information</h2>
               
               <form onSubmit={handleProfileUpdate} className="space-y-6">
-                <div className="flex items-center gap-6">
+                <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
                   <div className="relative">
                     {profilePic ? (
                       <Image 
@@ -285,7 +285,8 @@ export default function Settings() {
                   </div>
                 )}
 
-                <button type="submit" disabled={loading} className="btn-primary">
+                <button type="submit" disabled={loading} className="btn-primary w-full sm:w-auto py-4 text-lg">
+                  <i className="ri-save-line mr-2"></i>
                   {loading ? t('loading') : t('saveChanges')}
                 </button>
               </form>
@@ -295,8 +296,8 @@ export default function Settings() {
 
         {activeTab === 'account' && (
           <div className="col-12 lg:col-8">
-            <div className="card">
-              <h2 className="text-xl font-bold mb-6">{t('changePassword')}</h2>
+            <div className="card shadow-md shadow-black/10 rounded-xl">
+              <h2 className="text-2xl font-bold mb-8">{t('changePassword')}</h2>
               
               <form onSubmit={handlePasswordChange} className="space-y-6">
                 <div>
@@ -334,16 +335,17 @@ export default function Settings() {
                   />
                 </div>
 
-                <button type="submit" disabled={loading} className="btn-primary">
+                <button type="submit" disabled={loading} className="btn-primary w-full sm:w-auto py-4 text-lg">
+                  <i className="ri-lock-password-line mr-2"></i>
                   {loading ? t('loading') : t('changePassword')}
                 </button>
               </form>
             </div>
 
-            <div className="card mt-6">
-              <h2 className="text-xl font-bold mb-4">Your Connections</h2>
-              <div className="flex items-center justify-between p-4 bg-sky-50 dark:bg-blue-900/20 rounded-lg">
-                <div className="flex items-center gap-3">
+            <div className="card shadow-md shadow-black/10 rounded-xl mt-8">
+              <h2 className="text-2xl font-bold mb-6">Your Connections</h2>
+              <div className="flex items-center justify-between p-5 bg-sky-50 dark:bg-blue-900/20 rounded-xl">
+                <div className="flex items-center gap-4">
                   <div className="w-12 h-12 bg-sky-500 dark:bg-blue-700 rounded-full flex items-center justify-center">
                     <i className="ri-group-line text-2xl text-white"></i>
                   </div>
@@ -362,13 +364,14 @@ export default function Settings() {
 
         {activeTab === 'preferences' && (
           <div className="col-12 lg:col-8">
-            <div className="card space-y-6">
+            <div className="card shadow-md shadow-black/10 rounded-xl space-y-8">
               <div>
-                <h2 className="text-xl font-bold mb-6">Preferences</h2>
+                <h2 className="text-2xl font-bold mb-2">Preferences</h2>
+                <p className="text-muted text-sm">Customize your experience</p>
               </div>
 
-              <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-slate-800 rounded-lg">
-                <div className="flex items-center gap-3">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-5 bg-gray-50 dark:bg-slate-800 rounded-xl">
+                <div className="flex items-center gap-4">
                   <div className="w-12 h-12 bg-sky-500 dark:bg-blue-700 rounded-full flex items-center justify-center">
                     <i className={`${isDark ? 'ri-moon-line' : 'ri-sun-line'} text-2xl text-white`}></i>
                   </div>
@@ -385,8 +388,8 @@ export default function Settings() {
                 </button>
               </div>
 
-              <div className="p-4 bg-gray-50 dark:bg-slate-800 rounded-lg">
-                <div className="flex items-center gap-3 mb-4">
+              <div className="p-5 bg-gray-50 dark:bg-slate-800 rounded-xl">
+                <div className="flex items-center gap-4 mb-6">
                   <div className="w-12 h-12 bg-sky-500 dark:bg-blue-700 rounded-full flex items-center justify-center">
                     <i className="ri-global-line text-2xl text-white"></i>
                   </div>
@@ -445,11 +448,11 @@ export default function Settings() {
         )}
 
         <div className="col-12 lg:col-4">
-          <div className="card">
-            <h3 className="font-semibold mb-4">Quick Stats</h3>
+          <div className="card shadow-md shadow-black/10 rounded-xl w-full mt-8 lg:mt-0">
+            <h3 className="text-xl font-semibold mb-6">Quick Stats</h3>
             <div className="space-y-4">
-              <div className="flex items-center justify-between p-3 bg-sky-50 dark:bg-blue-900/20 rounded-lg">
-                <div className="flex items-center gap-2">
+              <div className="flex items-center justify-between p-5 bg-sky-50 dark:bg-blue-900/20 rounded-xl">
+                <div className="flex items-center gap-4">
                   <i className="ri-message-3-line text-sky-600 dark:text-blue-400"></i>
                   <span className="text-sm">Messages</span>
                 </div>

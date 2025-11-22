@@ -117,14 +117,18 @@ export default function Marks() {
   };
 
   return (
-    <div className="container-12 space-y-6 mt-6">
+    <div className="container-12 space-y-8 py-6">
       <div className="grid-12">
         <div className="col-12">
-          <div className="flex justify-between items-center">
-            <h1 className="h3">Marks Management</h1>
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div>
+              <h1 className="h2 mb-2">📊 Marks Management</h1>
+              <p className="text-muted text-sm">Add and manage student marks</p>
+            </div>
             {(user?.role === 'teacher' || user?.role === 'admin') && (
               <button onClick={() => setShowForm(!showForm)} className="btn-primary">
-                {showForm ? 'Cancel' : '+ Add Marks'}
+                <i className={`${showForm ? 'ri-close-line' : 'ri-add-line'} mr-2`}></i>
+                {showForm ? 'Cancel' : 'Add Marks'}
               </button>
             )}
           </div>
@@ -133,46 +137,53 @@ export default function Marks() {
 
       {showForm && (
         <div className="grid-12">
-          <div className="col-12 lg:col-8">
+          <div className="col-12 lg:col-10 xl:col-8">
             <div className="card">
-              <h2 className="text-xl font-bold mb-6">Add Student Marks</h2>
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="mb-8">
+                <h2 className="text-2xl font-bold mb-2">Add Student Marks</h2>
+                <p className="text-muted text-sm">Fill in the details to record student marks</p>
+              </div>
+              <form onSubmit={handleSubmit} className="space-y-8">
                 {/* Class & Section Selection */}
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Class</label>
-                    <select
-                      value={selectedClass}
-                      onChange={(e) => setSelectedClass(e.target.value)}
-                      className="input"
-                      required
-                    >
-                      <option value="">Select Class</option>
-                      {classes.map(cls => (
-                        <option key={cls} value={cls}>Class {cls}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Section</label>
-                    <select
-                      value={selectedSection}
-                      onChange={(e) => setSelectedSection(e.target.value)}
-                      className="input"
-                      required
-                    >
-                      <option value="">Select Section</option>
-                      {sections.map(sec => (
-                        <option key={sec} value={sec}>{sec}</option>
-                      ))}
-                    </select>
+                <div>
+                  <h3 className="text-sm font-semibold text-sky-600 dark:text-blue-400 mb-4 uppercase tracking-wide">Step 1: Select Class</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Class</label>
+                      <select
+                        value={selectedClass}
+                        onChange={(e) => setSelectedClass(e.target.value)}
+                        className="input"
+                        required
+                      >
+                        <option value="">Select Class</option>
+                        {classes.map(cls => (
+                          <option key={cls} value={cls}>Class {cls}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Section</label>
+                      <select
+                        value={selectedSection}
+                        onChange={(e) => setSelectedSection(e.target.value)}
+                        className="input"
+                        required
+                      >
+                        <option value="">Select Section</option>
+                        {sections.map(sec => (
+                          <option key={sec} value={sec}>{sec}</option>
+                        ))}
+                      </select>
+                    </div>
                   </div>
                 </div>
 
                 {/* Student Selection */}
                 {selectedClass && selectedSection && (
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Select Student</label>
+                  <div className="pt-6 border-t border-gray-200 dark:border-slate-700">
+                    <h3 className="text-sm font-semibold text-sky-600 dark:text-blue-400 mb-4 uppercase tracking-wide">Step 2: Select Student</h3>
+                    <label className="block text-sm font-medium mb-3">Select Student</label>
                     <select
                       value={formData.studentId}
                       onChange={handleStudentSelect}
@@ -191,8 +202,9 @@ export default function Marks() {
 
                 {/* Student Info Display */}
                 {formData.studentId && (
-                  <div className="p-4 bg-sky-50 dark:bg-blue-900/20 rounded-lg">
-                    <div className="grid grid-cols-3 gap-4 text-sm">
+                  <div className="p-5 bg-gradient-to-r from-sky-50 to-blue-50 dark:from-blue-900/20 dark:to-blue-800/20 rounded-xl border border-sky-200 dark:border-blue-800">
+                    <p className="text-xs font-semibold text-sky-600 dark:text-blue-400 mb-3 uppercase tracking-wide">Selected Student</p>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
                       <div>
                         <span className="text-muted">Name:</span>
                         <p className="font-semibold">{formData.studentName}</p>
@@ -210,102 +222,109 @@ export default function Marks() {
                 )}
 
                 {/* Marks Details */}
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Subject</label>
-                    <select
-                      value={formData.subject}
-                      onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                      className="input"
-                      required
-                    >
-                      <option value="">Select Subject</option>
-                      {subjects.map(sub => (
-                        <option key={sub} value={sub}>{sub}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Exam Type</label>
-                    <select
-                      value={formData.examType}
-                      onChange={(e) => setFormData({ ...formData, examType: e.target.value })}
-                      className="input"
-                      required
-                    >
-                      <option value="">Select Exam</option>
-                      {examTypes.map(exam => (
-                        <option key={exam} value={exam}>{exam}</option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
+                {formData.studentId && (
+                  <div className="pt-6 border-t border-gray-200 dark:border-slate-700">
+                    <h3 className="text-sm font-semibold text-sky-600 dark:text-blue-400 mb-4 uppercase tracking-wide">Step 3: Enter Marks Details</h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                      <div>
+                        <label className="block text-sm font-medium mb-2">Subject</label>
+                        <select
+                          value={formData.subject}
+                          onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
+                          className="input"
+                          required
+                        >
+                          <option value="">Select Subject</option>
+                          {subjects.map(sub => (
+                            <option key={sub} value={sub}>{sub}</option>
+                          ))}
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-2">Exam Type</label>
+                        <select
+                          value={formData.examType}
+                          onChange={(e) => setFormData({ ...formData, examType: e.target.value })}
+                          className="input"
+                          required
+                        >
+                          <option value="">Select Exam</option>
+                          {examTypes.map(exam => (
+                            <option key={exam} value={exam}>{exam}</option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
 
-                <div className="grid grid-cols-3 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Marks Obtained</label>
-                    <input
-                      type="number"
-                      value={formData.marks}
-                      onChange={(e) => setFormData({ ...formData, marks: e.target.value })}
-                      className="input"
-                      placeholder="85"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Total Marks</label>
-                    <input
-                      type="number"
-                      value={formData.totalMarks}
-                      onChange={(e) => setFormData({ ...formData, totalMarks: e.target.value })}
-                      className="input"
-                      placeholder="100"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Grade (Auto)</label>
-                    <input
-                      type="text"
-                      value={formData.marks && formData.totalMarks ? calculateGrade(parseInt(formData.marks), parseInt(formData.totalMarks)) : ''}
-                      className="input bg-gray-100 dark:bg-slate-800"
-                      disabled
-                    />
-                  </div>
-                </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mt-6">
+                      <div>
+                        <label className="block text-sm font-medium mb-2">Marks Obtained</label>
+                        <input
+                          type="number"
+                          value={formData.marks}
+                          onChange={(e) => setFormData({ ...formData, marks: e.target.value })}
+                          className="input"
+                          placeholder="85"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-2">Total Marks</label>
+                        <input
+                          type="number"
+                          value={formData.totalMarks}
+                          onChange={(e) => setFormData({ ...formData, totalMarks: e.target.value })}
+                          className="input"
+                          placeholder="100"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-2">Grade (Auto)</label>
+                        <input
+                          type="text"
+                          value={formData.marks && formData.totalMarks ? calculateGrade(parseInt(formData.marks), parseInt(formData.totalMarks)) : ''}
+                          className="input bg-gray-100 dark:bg-slate-800"
+                          disabled
+                        />
+                      </div>
+                    </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Term</label>
-                    <select
-                      value={formData.term}
-                      onChange={(e) => setFormData({ ...formData, term: e.target.value })}
-                      className="input"
-                      required
-                    >
-                      <option value="">Select Term</option>
-                      {terms.map(term => (
-                        <option key={term} value={term}>{term}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Academic Year</label>
-                    <input
-                      type="text"
-                      value={formData.academicYear}
-                      onChange={(e) => setFormData({ ...formData, academicYear: e.target.value })}
-                      className="input"
-                      required
-                    />
-                  </div>
-                </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mt-6">
+                      <div>
+                        <label className="block text-sm font-medium mb-2">Term</label>
+                        <select
+                          value={formData.term}
+                          onChange={(e) => setFormData({ ...formData, term: e.target.value })}
+                          className="input"
+                          required
+                        >
+                          <option value="">Select Term</option>
+                          {terms.map(term => (
+                            <option key={term} value={term}>{term}</option>
+                          ))}
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-2">Academic Year</label>
+                        <input
+                          type="text"
+                          value={formData.academicYear}
+                          onChange={(e) => setFormData({ ...formData, academicYear: e.target.value })}
+                          className="input"
+                          required
+                        />
+                      </div>
+                    </div>
 
-                <button type="submit" className="btn-primary w-full">
-                  <i className="ri-save-line mr-2"></i>
-                  Save Marks
-                </button>
+                    <div className="mt-8 pt-6 border-t border-gray-200 dark:border-slate-700">
+                      <button type="submit" className="btn-primary w-full py-4 text-lg">
+                        <i className="ri-save-line mr-2"></i>
+                        Save Marks
+                      </button>
+                    </div>
+                  </div>
+                )}
               </form>
             </div>
           </div>
@@ -315,55 +334,61 @@ export default function Marks() {
       <div className="grid-12">
         <div className="col-12">
           <div className="card">
-            <h2 className="text-xl font-bold mb-4">Marks Records</h2>
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-gray-200 dark:border-slate-700">
-                    <th className="text-left p-3">Roll No</th>
-                    <th className="text-left p-3">Student Name</th>
-                    <th className="text-left p-3">Class</th>
-                    <th className="text-left p-3">Subject</th>
-                    <th className="text-left p-3">Exam Type</th>
-                    <th className="text-left p-3">Marks</th>
-                    <th className="text-left p-3">Grade</th>
-                    <th className="text-left p-3">Term</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {marks.map((mark) => (
-                    <tr key={mark._id} className="border-b border-gray-200 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-800">
-                      <td className="p-3">{mark.student?.rollNumber}</td>
-                      <td className="p-3 font-medium">{mark.student?.name}</td>
-                      <td className="p-3">{mark.student?.class}-{mark.student?.section}</td>
-                      <td className="p-3">{mark.subject}</td>
-                      <td className="p-3">{mark.examType}</td>
-                      <td className="p-3">
-                        <span className="font-semibold">{mark.marks}</span>
-                        <span className="text-muted">/{mark.totalMarks}</span>
-                      </td>
-                      <td className="p-3">
-                        <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                          mark.grade === 'A+' || mark.grade === 'A' ? 'bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300' :
-                          mark.grade === 'B+' || mark.grade === 'B' ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300' :
-                          mark.grade === 'C' ? 'bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-300' :
-                          'bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300'
-                        }`}>
-                          {mark.grade}
-                        </span>
-                      </td>
-                      <td className="p-3">{mark.term}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              {marks.length === 0 && (
-                <div className="text-center py-12 text-muted">
-                  <i className="ri-file-list-line text-5xl mb-3 text-sky-500 dark:text-blue-400"></i>
-                  <p>No marks records found</p>
-                </div>
-              )}
+            <div className="mb-8">
+              <h2 className="text-2xl font-bold mb-2">📋 Marks Records</h2>
+              <p className="text-muted text-sm">View all recorded marks</p>
             </div>
+            
+            {marks.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-20 px-4">
+                <i className="ri-file-list-line text-7xl mb-6 text-sky-500 dark:text-blue-400"></i>
+                <p className="text-xl font-semibold mb-2">No marks records found</p>
+                <p className="text-sm text-muted">Start by adding student marks above</p>
+              </div>
+            ) : (
+              <div className="w-full overflow-x-auto rounded-lg border border-gray-200 dark:border-slate-700">
+                <table className="w-full min-w-[800px]">
+                  <thead className="bg-gray-50 dark:bg-slate-800/50">
+                    <tr>
+                      <th className="text-left py-4 px-6 text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-gray-400 whitespace-nowrap">Roll No</th>
+                      <th className="text-left py-4 px-6 text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-gray-400 whitespace-nowrap">Student Name</th>
+                      <th className="text-left py-4 px-6 text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-gray-400 whitespace-nowrap">Class</th>
+                      <th className="text-left py-4 px-6 text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-gray-400 whitespace-nowrap">Subject</th>
+                      <th className="text-left py-4 px-6 text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-gray-400 whitespace-nowrap">Exam Type</th>
+                      <th className="text-left py-4 px-6 text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-gray-400 whitespace-nowrap">Marks</th>
+                      <th className="text-left py-4 px-6 text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-gray-400 whitespace-nowrap">Grade</th>
+                      <th className="text-left py-4 px-6 text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-gray-400 whitespace-nowrap">Term</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200 dark:divide-slate-700">
+                    {marks.map((mark) => (
+                      <tr key={mark._id} className="hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors">
+                        <td className="py-4 px-6 whitespace-nowrap text-sm">{mark.student?.rollNumber}</td>
+                        <td className="py-4 px-6 whitespace-nowrap text-sm font-medium">{mark.student?.name}</td>
+                        <td className="py-4 px-6 whitespace-nowrap text-sm">{mark.student?.class}-{mark.student?.section}</td>
+                        <td className="py-4 px-6 whitespace-nowrap text-sm">{mark.subject}</td>
+                        <td className="py-4 px-6 whitespace-nowrap text-sm">{mark.examType}</td>
+                        <td className="py-4 px-6 whitespace-nowrap text-sm">
+                          <span className="font-semibold">{mark.marks}</span>
+                          <span className="text-muted">/{mark.totalMarks}</span>
+                        </td>
+                        <td className="py-4 px-6 whitespace-nowrap">
+                          <span className={`inline-flex px-3 py-1 rounded-full text-xs font-semibold ${
+                            mark.grade === 'A+' || mark.grade === 'A' ? 'bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300' :
+                            mark.grade === 'B+' || mark.grade === 'B' ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300' :
+                            mark.grade === 'C' ? 'bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-300' :
+                            'bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300'
+                          }`}>
+                            {mark.grade}
+                          </span>
+                        </td>
+                        <td className="py-4 px-6 whitespace-nowrap text-sm">{mark.term}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
         </div>
       </div>

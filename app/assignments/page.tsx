@@ -114,17 +114,21 @@ export default function Assignments() {
   };
 
   return (
-    <div className="container-12 space-y-6">
+    <div className="container-12 space-y-8 py-6">
       <div className="grid-12">
         <div className="col-12">
-          <div className="flex items-center justify-between mb-6">
-            <h1 className="h3">Assignments</h1>
-            <div className="flex items-center gap-4">
+          {/* Header Section */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+            <div>
+              <h1 className="h2 mb-2">📝 Assignments</h1>
+              <p className="text-muted text-sm">Manage and track assignments</p>
+            </div>
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
               {user?.role !== 'student' && (
                 <select
                   value={selectedClass}
                   onChange={(e) => setSelectedClass(e.target.value)}
-                  className="input w-32"
+                  className="input w-full sm:w-40"
                 >
                   <option value="">All Classes</option>
                   {classes.map(cls => (
@@ -145,176 +149,209 @@ export default function Assignments() {
                     dueDate: '',
                     totalMarks: ''
                   });
-                }} className="btn-primary">
-                  {showForm ? 'Cancel' : '+ Create Assignment'}
+                }} className="btn-primary w-full sm:w-auto">
+                  <i className={`${showForm ? 'ri-close-line' : 'ri-add-line'} mr-2`}></i>
+                  {showForm ? 'Cancel' : 'Create Assignment'}
                 </button>
               )}
             </div>
           </div>
 
+          {/* Form Section */}
           {showForm && (
-            <div className="card mb-6">
-              <h2 className="text-xl font-bold mb-4">{editingId ? 'Edit Assignment' : 'Create New Assignment'}</h2>
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <input
-                  type="text"
-                  placeholder="Assignment Title"
-                  value={formData.title}
-                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  className="input"
-                  required
-                />
-                <textarea
-                  placeholder="Description"
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  className="input min-h-[100px]"
-                  required
-                />
-                <div className="grid grid-cols-2 gap-4">
+            <div className="card mb-8">
+              <div className="mb-8">
+                <h2 className="text-2xl font-bold mb-2">{editingId ? 'Edit Assignment' : 'Create New Assignment'}</h2>
+                <p className="text-muted text-sm">Fill in the details to create an assignment</p>
+              </div>
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div>
+                  <label className="block text-sm font-medium mb-2">Assignment Title</label>
                   <input
                     type="text"
-                    placeholder="Subject"
-                    value={formData.subject}
-                    onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                    className="input"
-                    required
-                  />
-                  <select
-                    value={formData.class}
-                    onChange={(e) => setFormData({ ...formData, class: e.target.value })}
-                    className="input"
-                    required
-                  >
-                    <option value="">Select Class</option>
-                    {classes.map(cls => (
-                      <option key={cls} value={cls}>{cls}</option>
-                    ))}
-                  </select>
-                  <select
-                    value={formData.section}
-                    onChange={(e) => setFormData({ ...formData, section: e.target.value })}
-                    className="input"
-                    required
-                  >
-                    <option value="">Select Section</option>
-                    {sections.map(sec => (
-                      <option key={sec} value={sec}>{sec}</option>
-                    ))}
-                  </select>
-                  <input
-                    type="date"
-                    value={formData.dueDate}
-                    onChange={(e) => setFormData({ ...formData, dueDate: e.target.value })}
-                    className="input"
-                    required
-                  />
-                  <input
-                    type="number"
-                    placeholder="Total Marks"
-                    value={formData.totalMarks}
-                    onChange={(e) => setFormData({ ...formData, totalMarks: e.target.value })}
+                    placeholder="Enter assignment title"
+                    value={formData.title}
+                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                     className="input"
                     required
                   />
                 </div>
-                <button type="submit" className="btn-primary w-full">
+                <div>
+                  <label className="block text-sm font-medium mb-2">Description</label>
+                  <textarea
+                    placeholder="Enter assignment description"
+                    value={formData.description}
+                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    className="input min-h-[120px]"
+                    required
+                  />
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Subject</label>
+                    <input
+                      type="text"
+                      placeholder="e.g., Mathematics"
+                      value={formData.subject}
+                      onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
+                      className="input"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Class</label>
+                    <select
+                      value={formData.class}
+                      onChange={(e) => setFormData({ ...formData, class: e.target.value })}
+                      className="input"
+                      required
+                    >
+                      <option value="">Select Class</option>
+                      {classes.map(cls => (
+                        <option key={cls} value={cls}>{cls}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Section</label>
+                    <select
+                      value={formData.section}
+                      onChange={(e) => setFormData({ ...formData, section: e.target.value })}
+                      className="input"
+                      required
+                    >
+                      <option value="">Select Section</option>
+                      {sections.map(sec => (
+                        <option key={sec} value={sec}>{sec}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Due Date</label>
+                    <input
+                      type="date"
+                      value={formData.dueDate}
+                      onChange={(e) => setFormData({ ...formData, dueDate: e.target.value })}
+                      className="input"
+                      required
+                    />
+                  </div>
+                  <div className="sm:col-span-2">
+                    <label className="block text-sm font-medium mb-2">Total Marks</label>
+                    <input
+                      type="number"
+                      placeholder="e.g., 100"
+                      value={formData.totalMarks}
+                      onChange={(e) => setFormData({ ...formData, totalMarks: e.target.value })}
+                      className="input"
+                      required
+                    />
+                  </div>
+                </div>
+                <button type="submit" className="btn-primary w-full py-4 text-lg">
+                  <i className="ri-save-line mr-2"></i>
                   {editingId ? 'Update Assignment' : 'Create Assignment'}
                 </button>
               </form>
             </div>
           )}
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {assignments.map((assignment) => {
-              const submission = getSubmissionStatus(assignment);
-              const isOverdue = new Date(assignment.dueDate) < new Date();
-              
-              return (
-                <div key={assignment._id} className="card">
-                  <div className="flex items-start justify-between mb-3">
-                    <h3 className="text-xl font-bold">{assignment.title}</h3>
-                    {isOverdue && !submission && user?.role === 'student' && (
-                      <span className="px-2 py-1 rounded-full bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300 text-xs">
-                        Overdue
-                      </span>
-                    )}
-                  </div>
-
-                  <p className="text-sm text-muted mb-3">{assignment.description}</p>
-
-                  <div className="flex items-center gap-4 text-sm mb-4">
-                    <span className="flex items-center gap-1">
-                      <i className="ri-book-line"></i> {assignment.subject}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <i className="ri-school-line"></i> Class {assignment.class}-{assignment.section}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <i className="ri-bar-chart-line"></i> {assignment.totalMarks} marks
-                    </span>
-                  </div>
-
-                  <div className="flex items-center justify-between pt-3 border-t border-gray-200 dark:border-slate-700">
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm text-muted">
-                        Due: {new Date(assignment.dueDate).toLocaleDateString()}
-                      </span>
-                      {(user?.role === 'teacher' || user?.role === 'admin') && (
-                        <div className="flex gap-1">
-                          <button
-                            onClick={() => handleEdit(assignment)}
-                            className="text-xs px-2 py-1 rounded bg-sky-100 dark:bg-blue-900 text-sky-700 dark:text-blue-300 hover:opacity-80"
-                          >
-                            <i className="ri-edit-line"></i>
-                          </button>
-                          <button
-                            onClick={() => handleDelete(assignment._id)}
-                            className="text-xs px-2 py-1 rounded bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300 hover:opacity-80"
-                          >
-                            <i className="ri-delete-bin-line"></i>
-                          </button>
-                        </div>
+          {/* Assignments Grid */}
+          {assignments.length === 0 ? (
+            <div className="card">
+              <div className="flex flex-col items-center justify-center py-20 px-4">
+                <i className="ri-file-list-3-line text-7xl mb-6 text-sky-500 dark:text-blue-400"></i>
+                <p className="text-xl font-semibold mb-2">No assignments available</p>
+                <p className="text-sm text-muted">Assignments will appear here once created</p>
+              </div>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {assignments.map((assignment) => {
+                const submission = getSubmissionStatus(assignment);
+                const isOverdue = new Date(assignment.dueDate) < new Date();
+                
+                return (
+                  <div key={assignment._id} className="card hover:shadow-xl transition-shadow">
+                    <div className="flex items-start justify-between mb-4">
+                      <h3 className="text-xl font-bold pr-2">{assignment.title}</h3>
+                      {isOverdue && !submission && user?.role === 'student' && (
+                        <span className="px-3 py-1 rounded-full bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300 text-xs font-semibold whitespace-nowrap">
+                          Overdue
+                        </span>
                       )}
                     </div>
 
-                    {user?.role === 'student' && (
-                      submission ? (
-                        <div className="flex items-center gap-2">
-                          <span className="text-sm text-green-600 dark:text-green-400">
-                            <i className="ri-check-line"></i> Submitted
-                          </span>
-                          {submission.marks && (
-                            <span className="px-2 py-1 rounded bg-sky-100 dark:bg-blue-900 text-sky-700 dark:text-blue-300 text-sm">
-                              {submission.marks}/{assignment.totalMarks}
-                            </span>
-                          )}
-                        </div>
-                      ) : (
-                        <button
-                          onClick={() => submitAssignment(assignment._id)}
-                          className="btn-primary text-sm px-4 py-2"
-                        >
-                          Submit
-                        </button>
-                      )
-                    )}
+                    <p className="text-sm text-muted mb-4 line-clamp-2">{assignment.description}</p>
 
-                    {(user?.role === 'teacher' || user?.role === 'admin') && (
-                      <span className="text-sm text-muted">
-                        {assignment.submissions?.length || 0} submissions
+                    <div className="flex flex-wrap items-center gap-3 text-sm mb-4">
+                      <span className="flex items-center gap-1">
+                        <i className="ri-book-line text-sky-500 dark:text-blue-400"></i> {assignment.subject}
                       </span>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+                      <span className="flex items-center gap-1">
+                        <i className="ri-school-line text-sky-500 dark:text-blue-400"></i> Class {assignment.class}-{assignment.section}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <i className="ri-bar-chart-line text-sky-500 dark:text-blue-400"></i> {assignment.totalMarks} marks
+                      </span>
+                    </div>
 
-          {assignments.length === 0 && (
-            <div className="card text-center py-12">
-              <i className="ri-file-list-3-line text-6xl mb-4 text-sky-500 dark:text-blue-400"></i>
-              <p className="text-muted">No assignments available</p>
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-4 border-t border-gray-200 dark:border-slate-700">
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm text-muted">
+                          Due: {new Date(assignment.dueDate).toLocaleDateString()}
+                        </span>
+                        {(user?.role === 'teacher' || user?.role === 'admin') && (
+                          <div className="flex gap-1">
+                            <button
+                              onClick={() => handleEdit(assignment)}
+                              className="text-xs px-3 py-1.5 rounded-lg bg-sky-100 dark:bg-blue-900 text-sky-700 dark:text-blue-300 hover:opacity-80 transition-opacity"
+                            >
+                              <i className="ri-edit-line"></i>
+                            </button>
+                            <button
+                              onClick={() => handleDelete(assignment._id)}
+                              className="text-xs px-3 py-1.5 rounded-lg bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300 hover:opacity-80 transition-opacity"
+                            >
+                              <i className="ri-delete-bin-line"></i>
+                            </button>
+                          </div>
+                        )}
+                      </div>
+
+                      {user?.role === 'student' && (
+                        submission ? (
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm text-green-600 dark:text-green-400 font-medium">
+                              <i className="ri-check-line"></i> Submitted
+                            </span>
+                            {submission.marks && (
+                              <span className="px-3 py-1 rounded-full bg-sky-100 dark:bg-blue-900 text-sky-700 dark:text-blue-300 text-sm font-semibold">
+                                {submission.marks}/{assignment.totalMarks}
+                              </span>
+                            )}
+                          </div>
+                        ) : (
+                          <button
+                            onClick={() => submitAssignment(assignment._id)}
+                            className="btn-primary text-sm px-6 py-2 w-full sm:w-auto"
+                          >
+                            <i className="ri-upload-line mr-1"></i>
+                            Submit
+                          </button>
+                        )
+                      )}
+
+                      {(user?.role === 'teacher' || user?.role === 'admin') && (
+                        <span className="text-sm text-muted">
+                          <i className="ri-file-list-line mr-1"></i>
+                          {assignment.submissions?.length || 0} submissions
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           )}
         </div>

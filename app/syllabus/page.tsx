@@ -111,77 +111,105 @@ export default function Syllabus() {
   const syllabusMap = new Map(syllabus.map(s => [s.subject, s]));
 
   return (
-    <div className="container-12 space-y-6">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="h3">📚 Syllabus</h1>
-        <div className="flex items-center gap-4">
+    <div className="container-12 space-y-8 py-6 px-4">
+      {/* Header Section */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="text-center sm:text-left">
+          <h1 className="h2 mb-2">📚 Syllabus</h1>
+          <p className="text-muted text-sm">View and download subject syllabus</p>
+        </div>
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
           {user?.role !== 'student' && (
-            <select value={selectedClass} onChange={(e) => setSelectedClass(e.target.value)} className="input w-32">
+            <select value={selectedClass} onChange={(e) => setSelectedClass(e.target.value)} className="input w-full sm:w-40">
               {classes.map(cls => <option key={cls} value={cls}>Std. {cls}</option>)}
             </select>
           )}
           {['11', '12'].includes(selectedClass) && (
-            <select value={selectedStream} onChange={(e) => setSelectedStream(e.target.value)} className="input w-32">
+            <select value={selectedStream} onChange={(e) => setSelectedStream(e.target.value)} className="input w-full sm:w-40">
               {streams.map(s => <option key={s} value={s}>{s}</option>)}
             </select>
           )}
           {(user?.role === 'teacher' || user?.role === 'admin') && (
-            <button onClick={() => { setShowUpload(!showUpload); setEditingSubject(null); setUploadData({ subject: '', class: '', file: null }); }} className="btn-primary">
-              {showUpload ? 'Cancel' : '+ Upload PDF'}
+            <button onClick={() => { setShowUpload(!showUpload); setEditingSubject(null); setUploadData({ subject: '', class: '', file: null }); }} className="btn-primary w-full sm:w-auto">
+              <i className={`${showUpload ? 'ri-close-line' : 'ri-upload-line'} mr-2`}></i>
+              {showUpload ? 'Cancel' : 'Upload PDF'}
             </button>
           )}
         </div>
       </div>
 
+      {/* Upload Form */}
       {showUpload && (
-        <div className="card mb-6">
-          <h2 className="text-xl font-bold mb-4">{editingSubject ? 'Edit Syllabus PDF' : 'Upload Syllabus PDF'}</h2>
-          <form onSubmit={handleUpload} className="space-y-4">
-            <select value={uploadData.class} onChange={(e) => setUploadData({ ...uploadData, class: e.target.value })} className="input" required disabled={!!editingSubject}>
-              <option value="">Select Class</option>
-              {classes.map(cls => <option key={cls} value={cls}>Std. {cls}</option>)}
-            </select>
-            {['11', '12'].includes(uploadData.class) && (
-              <select value={selectedStream} onChange={(e) => setSelectedStream(e.target.value)} className="input" required>
-                {streams.map(s => <option key={s} value={s}>{s}</option>)}
+        <div className="card">
+          <div className="mb-8">
+            <h2 className="text-2xl font-bold mb-2">{editingSubject ? 'Edit Syllabus PDF' : 'Upload Syllabus PDF'}</h2>
+            <p className="text-muted text-sm">Select class, subject, and upload PDF file</p>
+          </div>
+          <form onSubmit={handleUpload} className="space-y-6">
+            <div>
+              <label className="block text-sm font-medium mb-2">Class</label>
+              <select value={uploadData.class} onChange={(e) => setUploadData({ ...uploadData, class: e.target.value })} className="input" required disabled={!!editingSubject}>
+                <option value="">Select Class</option>
+                {classes.map(cls => <option key={cls} value={cls}>Std. {cls}</option>)}
               </select>
+            </div>
+            {['11', '12'].includes(uploadData.class) && (
+              <div>
+                <label className="block text-sm font-medium mb-2">Stream</label>
+                <select value={selectedStream} onChange={(e) => setSelectedStream(e.target.value)} className="input" required>
+                  {streams.map(s => <option key={s} value={s}>{s}</option>)}
+                </select>
+              </div>
             )}
-            <select value={uploadData.subject} onChange={(e) => setUploadData({ ...uploadData, subject: e.target.value })} className="input" required disabled={!!editingSubject}>
-              <option value="">Select Subject</option>
-              {(SUBJECTS_BY_CLASS[uploadData.class && ['11', '12'].includes(uploadData.class) ? `${uploadData.class}-${selectedStream}` : uploadData.class] || []).map(sub => (
-                <option key={sub} value={sub}>{sub}</option>
-              ))}
-            </select>
-            <input type="file" accept=".pdf" onChange={(e) => setUploadData({ ...uploadData, file: e.target.files?.[0] || null })} className="input" required />
-            <button type="submit" className="btn-primary w-full">{editingSubject ? 'Update PDF' : 'Upload PDF'}</button>
+            <div>
+              <label className="block text-sm font-medium mb-2">Subject</label>
+              <select value={uploadData.subject} onChange={(e) => setUploadData({ ...uploadData, subject: e.target.value })} className="input" required disabled={!!editingSubject}>
+                <option value="">Select Subject</option>
+                {(SUBJECTS_BY_CLASS[uploadData.class && ['11', '12'].includes(uploadData.class) ? `${uploadData.class}-${selectedStream}` : uploadData.class] || []).map(sub => (
+                  <option key={sub} value={sub}>{sub}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-2">PDF File</label>
+              <input type="file" accept=".pdf" onChange={(e) => setUploadData({ ...uploadData, file: e.target.files?.[0] || null })} className="input" required />
+            </div>
+            <button type="submit" className="btn-primary w-full py-4 text-lg">
+              <i className="ri-upload-cloud-line mr-2"></i>
+              {editingSubject ? 'Update PDF' : 'Upload PDF'}
+            </button>
           </form>
         </div>
       )}
 
+      {/* Subjects Grid */}
       <div className="card">
-        <h2 className="text-2xl font-bold mb-4">📘 Std. {selectedClass} {['11', '12'].includes(selectedClass) && `- ${selectedStream}`} Subjects</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold mb-2">📘 Std. {selectedClass} {['11', '12'].includes(selectedClass) && `- ${selectedStream}`} Subjects</h2>
+          <p className="text-muted text-sm">Download syllabus PDFs for each subject</p>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {subjects.map((subject) => {
             const item = syllabusMap.get(subject);
             return (
-              <div key={subject} className="p-4 rounded-lg border-2 border-sky-200 dark:border-blue-800 hover:border-sky-400 dark:hover:border-blue-600 transition-colors">
-                <div className="flex items-start justify-between mb-3">
-                  <h3 className="font-bold text-lg">{subject}</h3>
-                  {item?.pdfUrl && <span className="text-2xl">📄</span>}
+              <div key={subject} className="p-5 rounded-xl border-2 border-sky-200 dark:border-blue-800 hover:border-sky-400 dark:hover:border-blue-600 hover:shadow-lg transition-all bg-white/5 dark:bg-slate-900/40">
+                <div className="flex items-start justify-between mb-4">
+                  <h3 className="font-bold text-base leading-tight pr-2">{subject}</h3>
+                  {item?.pdfUrl && <span className="text-3xl">📄</span>}
                 </div>
                 {item ? (
-                  <div className="space-y-2">
-                    <p className="text-sm text-muted">PDF: {item.pdfName}</p>
-                    <div className="flex gap-2">
-                      <button onClick={() => handleDownload(item._id)} className="px-3 py-1 rounded bg-sky-500 dark:bg-blue-600 text-white text-sm hover:opacity-80">
-                        <i className="ri-download-line"></i> Download
+                  <div className="space-y-3">
+                    <p className="text-sm text-muted truncate" title={item.pdfName}>PDF: {item.pdfName}</p>
+                    <div className="flex flex-wrap gap-2">
+                      <button onClick={() => handleDownload(item._id)} className="flex-1 px-4 py-2.5 rounded-lg bg-sky-500 dark:bg-blue-600 text-white text-sm font-medium hover:opacity-90 transition-opacity">
+                        <i className="ri-download-line mr-1"></i> Download
                       </button>
                       {(user?.role === 'teacher' || user?.role === 'admin') && (
                         <>
-                          <button onClick={() => handleEdit(subject)} className="px-3 py-1 rounded bg-orange-500 text-white text-sm hover:opacity-80">
+                          <button onClick={() => handleEdit(subject)} className="px-4 py-2.5 rounded-lg bg-orange-500 text-white text-sm font-medium hover:opacity-90 transition-opacity">
                             <i className="ri-edit-line"></i>
                           </button>
-                          <button onClick={() => handleDelete(item._id)} className="px-3 py-1 rounded bg-red-500 text-white text-sm hover:opacity-80">
+                          <button onClick={() => handleDelete(item._id)} className="px-4 py-2.5 rounded-lg bg-red-500 text-white text-sm font-medium hover:opacity-90 transition-opacity">
                             <i className="ri-delete-bin-line"></i>
                           </button>
                         </>
@@ -189,11 +217,11 @@ export default function Syllabus() {
                     </div>
                   </div>
                 ) : (
-                  <div className="space-y-2">
+                  <div className="space-y-3">
                     <p className="text-sm text-muted">No PDF uploaded yet</p>
                     {(user?.role === 'teacher' || user?.role === 'admin') && (
-                      <button onClick={() => handleEdit(subject)} className="px-3 py-1 rounded bg-sky-500 dark:bg-blue-600 text-white text-sm hover:opacity-80">
-                        <i className="ri-upload-line"></i> Upload
+                      <button onClick={() => handleEdit(subject)} className="w-full px-4 py-2.5 rounded-lg bg-sky-500 dark:bg-blue-600 text-white text-sm font-medium hover:opacity-90 transition-opacity">
+                        <i className="ri-upload-line mr-1"></i> Upload
                       </button>
                     )}
                   </div>

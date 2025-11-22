@@ -36,7 +36,6 @@ export default function Attendance() {
       );
       setStudents(filtered);
       
-      // Initialize attendance data
       const initial: {[key: string]: string} = {};
       filtered.forEach((s: any) => {
         initial[s._id] = 'present';
@@ -87,80 +86,95 @@ export default function Attendance() {
   };
 
   return (
-    <div className="container-12 space-y-6">
+    <div className="container-12 space-y-8 py-6">
       <div className="grid-12">
         <div className="col-12">
-          <h1 className="h3 mb-6">Attendance</h1>
+          <div className="mb-8">
+            <h1 className="h2 mb-2">📅 Attendance Management</h1>
+            <p className="text-muted text-sm">Mark and track student attendance</p>
+          </div>
 
           {(user?.role === 'teacher' || user?.role === 'admin') && (
-            <div className="card mb-6">
-              <h2 className="text-xl font-bold mb-4">Mark Attendance</h2>
+            <div className="card mb-8">
+              <div className="mb-8">
+                <h2 className="text-2xl font-bold mb-2">Mark Attendance</h2>
+                <p className="text-muted text-sm">Select class, section, and date to mark attendance</p>
+              </div>
               
-              <div className="grid grid-cols-3 gap-4 mb-4">
-                <select
-                  value={selectedClass}
-                  onChange={(e) => setSelectedClass(e.target.value)}
-                  className="input"
-                >
-                  <option value="">Select Class</option>
-                  {classes.map(cls => (
-                    <option key={cls} value={cls}>Class {cls}</option>
-                  ))}
-                </select>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mb-8">
+                <div>
+                  <label className="block text-sm font-medium mb-2">Class</label>
+                  <select
+                    value={selectedClass}
+                    onChange={(e) => setSelectedClass(e.target.value)}
+                    className="input"
+                  >
+                    <option value="">Select Class</option>
+                    {classes.map(cls => (
+                      <option key={cls} value={cls}>Class {cls}</option>
+                    ))}
+                  </select>
+                </div>
 
-                <select
-                  value={selectedSection}
-                  onChange={(e) => setSelectedSection(e.target.value)}
-                  className="input"
-                >
-                  <option value="">Select Section</option>
-                  {sections.map(sec => (
-                    <option key={sec} value={sec}>Section {sec}</option>
-                  ))}
-                </select>
+                <div>
+                  <label className="block text-sm font-medium mb-2">Section</label>
+                  <select
+                    value={selectedSection}
+                    onChange={(e) => setSelectedSection(e.target.value)}
+                    className="input"
+                  >
+                    <option value="">Select Section</option>
+                    {sections.map(sec => (
+                      <option key={sec} value={sec}>Section {sec}</option>
+                    ))}
+                  </select>
+                </div>
 
-                <input
-                  type="date"
-                  value={selectedDate}
-                  onChange={(e) => setSelectedDate(e.target.value)}
-                  className="input"
-                />
+                <div>
+                  <label className="block text-sm font-medium mb-2">Date</label>
+                  <input
+                    type="date"
+                    value={selectedDate}
+                    onChange={(e) => setSelectedDate(e.target.value)}
+                    className="input"
+                  />
+                </div>
               </div>
 
               {students.length > 0 && (
                 <>
-                  <div className="space-y-2 mb-4 max-h-[400px] overflow-y-auto">
+                  <div className="space-y-3 mb-8 max-h-[500px] overflow-y-auto pr-2 scrollbar-thin">
                     {students.map((student) => (
                       <div
                         key={student._id}
-                        className="flex items-center justify-between p-3 bg-gray-50 dark:bg-slate-800 rounded-lg"
+                        className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 bg-gray-50 dark:bg-slate-800 rounded-xl hover:shadow-md transition-shadow"
                       >
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-sky-400 to-blue-600 flex items-center justify-center text-white font-bold">
+                        <div className="flex items-center gap-4">
+                          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-sky-400 to-blue-600 flex items-center justify-center text-white font-bold text-lg shrink-0">
                             {student.rollNumber || '?'}
                           </div>
                           <div>
-                            <p className="font-semibold">{student.name}</p>
-                            <p className="text-xs text-muted">
+                            <p className="font-semibold text-base">{student.name}</p>
+                            <p className="text-xs text-muted mt-1">
                               Roll No: {student.rollNumber} | Class {student.class}-{student.section}
                             </p>
                           </div>
                         </div>
 
-                        <div className="flex gap-2">
+                        <div className="flex gap-2 flex-wrap sm:flex-nowrap">
                           {['present', 'absent', 'late', 'excused'].map((status) => (
                             <button
                               key={status}
                               onClick={() => updateAttendance(student._id, status)}
-                              className={`px-3 py-1 rounded-lg text-sm transition-all ${
+                              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                                 attendanceData[student._id] === status
                                   ? status === 'present'
-                                    ? 'bg-green-500 text-white'
+                                    ? 'bg-green-500 text-white shadow-lg'
                                     : status === 'absent'
-                                    ? 'bg-red-500 text-white'
+                                    ? 'bg-red-500 text-white shadow-lg'
                                     : status === 'late'
-                                    ? 'bg-yellow-500 text-white'
-                                    : 'bg-blue-500 text-white'
+                                    ? 'bg-yellow-500 text-white shadow-lg'
+                                    : 'bg-blue-500 text-white shadow-lg'
                                   : 'bg-gray-200 dark:bg-slate-700 hover:bg-gray-300 dark:hover:bg-slate-600'
                               }`}
                             >
@@ -174,59 +188,73 @@ export default function Attendance() {
 
                   <button
                     onClick={handleSubmitAttendance}
-                    className="btn-primary w-full"
+                    className="btn-primary w-full py-4 text-lg"
                   >
+                    <i className="ri-save-line mr-2"></i>
                     Submit Attendance
                   </button>
                 </>
               )}
 
               {selectedClass && selectedSection && students.length === 0 && (
-                <p className="text-center text-muted py-8">
-                  No students found in Class {selectedClass}-{selectedSection}
-                </p>
+                <div className="text-center py-16 text-muted">
+                  <i className="ri-user-search-line text-6xl mb-4 text-sky-500 dark:text-blue-400"></i>
+                  <p className="text-lg">No students found in Class {selectedClass}-{selectedSection}</p>
+                </div>
               )}
             </div>
           )}
 
           <div className="card">
-            <h2 className="text-xl font-bold mb-4">Attendance Records</h2>
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b dark:border-gray-700">
-                    <th className="text-left p-2">Student</th>
-                    <th className="text-left p-2">Class</th>
-                    <th className="text-left p-2">Date</th>
-                    <th className="text-left p-2">Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {attendance.slice(0, 20).map((record) => (
-                    <tr key={record._id} className="border-b dark:border-gray-700">
-                      <td className="p-2">{record.student?.name}</td>
-                      <td className="p-2">
-                        {record.student?.class}-{record.student?.section}
-                      </td>
-                      <td className="p-2">{new Date(record.date).toLocaleDateString()}</td>
-                      <td className="p-2">
-                        <span
-                          className={`px-2 py-1 rounded text-sm ${
-                            record.status === 'present'
-                              ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
-                              : record.status === 'absent'
-                              ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
-                              : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
-                          }`}
-                        >
-                          {record.status}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <div className="mb-8">
+              <h2 className="text-2xl font-bold mb-2">📋 Attendance Records</h2>
+              <p className="text-muted text-sm">View recent attendance records</p>
             </div>
+            
+            {attendance.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-20 px-4">
+                <i className="ri-calendar-check-line text-7xl mb-6 text-sky-500 dark:text-blue-400"></i>
+                <p className="text-xl font-semibold mb-2">No attendance records found</p>
+                <p className="text-sm text-muted">Start by marking attendance above</p>
+              </div>
+            ) : (
+              <div className="w-full overflow-x-auto rounded-lg border border-gray-200 dark:border-slate-700">
+                <table className="w-full min-w-[600px]">
+                  <thead className="bg-gray-50 dark:bg-slate-800/50">
+                    <tr>
+                      <th className="text-left py-4 px-6 text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-gray-400 whitespace-nowrap">Student</th>
+                      <th className="text-left py-4 px-6 text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-gray-400 whitespace-nowrap">Class</th>
+                      <th className="text-left py-4 px-6 text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-gray-400 whitespace-nowrap">Date</th>
+                      <th className="text-left py-4 px-6 text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-gray-400 whitespace-nowrap">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200 dark:divide-slate-700">
+                    {attendance.slice(0, 20).map((record) => (
+                      <tr key={record._id} className="hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors">
+                        <td className="py-4 px-6 whitespace-nowrap text-sm font-medium">{record.student?.name}</td>
+                        <td className="py-4 px-6 whitespace-nowrap text-sm">
+                          {record.student?.class}-{record.student?.section}
+                        </td>
+                        <td className="py-4 px-6 whitespace-nowrap text-sm">{new Date(record.date).toLocaleDateString()}</td>
+                        <td className="py-4 px-6 whitespace-nowrap">
+                          <span
+                            className={`inline-flex px-3 py-1 rounded-full text-xs font-semibold ${
+                              record.status === 'present'
+                                ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+                                : record.status === 'absent'
+                                ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
+                                : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
+                            }`}
+                          >
+                            {record.status}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
         </div>
       </div>
