@@ -12,7 +12,7 @@ export default function Register() {
     phone: '',
     password: '',
     role: 'student',
-    class: '',
+    studentClass: '',
     section: '',
     rollNumber: '',
   });
@@ -57,7 +57,7 @@ export default function Register() {
 
     // Student specific validations
     if (formData.role === 'student') {
-      if (!formData.class.trim()) {
+      if (!formData.studentClass.trim()) {
         newErrors.class = 'Class is required for students';
       }
       if (!formData.section.trim()) {
@@ -199,9 +199,9 @@ export default function Register() {
                   <label className="block text-sm font-medium mb-2">Class *</label>
                   <input
                     type="text"
-                    value={formData.class}
+                    value={formData.studentClass}
                     onChange={(e) => {
-                      setFormData({ ...formData, class: e.target.value });
+                      setFormData({ ...formData, studentClass: e.target.value });
                       if (errors.class) setErrors({ ...errors, class: '' });
                     }}
                     className={`input ${errors.class ? 'border-red-500 focus:ring-red-500' : ''}`}
