@@ -92,6 +92,7 @@ export default function Register() {
 
     setLoading(true);
     try {
+      console.log('Submitting registration data:', formData);
       await api.post('/auth/register', formData);
       toast.success('Registration successful! Awaiting admin approval.');
       router.push('/login');
