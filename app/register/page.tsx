@@ -9,7 +9,7 @@ export default function Register() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    mobile: '',
+    phone: '',
     password: '',
     role: 'student',
     class: '',
@@ -38,14 +38,14 @@ export default function Register() {
       newErrors.email = 'Please enter a valid email';
     }
 
-    // Mobile validation
-    const mobileRegex = /^[6-9]\d{9}$/;
-    if (!formData.mobile) {
-      newErrors.mobile = 'Mobile number is required';
-    } else if (formData.mobile.length !== 10) {
-      newErrors.mobile = 'Mobile number must be exactly 10 digits';
-    } else if (!mobileRegex.test(formData.mobile)) {
-      newErrors.mobile = 'Please enter a valid Indian mobile number';
+    // Phone validation
+    const phoneRegex = /^[6-9]\d{9}$/;
+    if (!formData.phone) {
+      newErrors.phone = 'Phone number is required';
+    } else if (formData.phone.length !== 10) {
+      newErrors.phone = 'Phone number must be exactly 10 digits';
+    } else if (!phoneRegex.test(formData.phone)) {
+      newErrors.phone = 'Please enter a valid Indian mobile number';
     }
 
     // Password validation
@@ -72,19 +72,19 @@ export default function Register() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleMobileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/\D/g, ''); // Only digits
     if (value.length <= 10) {
-      setFormData({ ...formData, mobile: value });
-      if (errors.mobile) {
-        setErrors({ ...errors, mobile: '' });
+      setFormData({ ...formData, phone: value });
+      if (errors.phone) {
+        setErrors({ ...errors, phone: '' });
       }
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       toast.error('Please fix the errors in the form');
       return;
@@ -147,22 +147,22 @@ export default function Register() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2">Mobile Number *</label>
+              <label className="block text-sm font-medium mb-2">Phone Number *</label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <span className="text-gray-500 text-sm">+91</span>
                 </div>
                 <input
                   type="tel"
-                  value={formData.mobile}
-                  onChange={handleMobileChange}
-                  className={`input pl-12 ${errors.mobile ? 'border-red-500 focus:ring-red-500' : ''}`}
+                  value={formData.phone}
+                  onChange={handlePhoneChange}
+                  className={`input pl-12 ${errors.phone ? 'border-red-500 focus:ring-red-500' : ''}`}
                   placeholder="9876543210"
                   maxLength={10}
                 />
               </div>
-              {errors.mobile && <p className="text-red-500 text-xs mt-1">{errors.mobile}</p>}
-              <p className="text-xs text-gray-500 mt-1">Enter 10-digit mobile number</p>
+              {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone}</p>}
+              <p className="text-xs text-gray-500 mt-1">Enter 10-digit phone number</p>
             </div>
 
             <div>
