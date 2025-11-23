@@ -45,12 +45,16 @@ export const useThemeStore = create<ThemeState>((set) => ({
 
 interface SidebarState {
   isCollapsed: boolean;
+  isMobileOpen: boolean;
   toggleSidebar: () => void;
+  setMobileOpen: (open: boolean) => void;
 }
 
 export const useSidebarStore = create<SidebarState>((set) => ({
   isCollapsed: false,
+  isMobileOpen: false,
   toggleSidebar: () => set((state) => ({ isCollapsed: !state.isCollapsed })),
+  setMobileOpen: (open) => set({ isMobileOpen: open }),
 }));
 
 interface LanguageState {
@@ -71,10 +75,10 @@ export const useLanguageStore = create<LanguageState>((set) => ({
 export const useTranslation = () => {
   const { language } = useLanguageStore();
   const translations = require('./translations').translations;
-  
+
   const t = (key: string) => {
     return translations[language]?.[key] || translations.en[key] || key;
   };
-  
+
   return { t, language };
 };

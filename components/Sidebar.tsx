@@ -7,9 +7,8 @@ import { useState, useEffect } from 'react';
 export default function Sidebar() {
   const pathname = usePathname();
   const { user } = useAuthStore();
-  const { isCollapsed } = useSidebarStore();
+  const { isCollapsed, isMobileOpen, setMobileOpen } = useSidebarStore();
   const { t } = useTranslation();
-  const [isOpen, setIsOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [sidebarWidth, setSidebarWidth] = useState(256);
   const [isResizing, setIsResizing] = useState(false);
@@ -65,32 +64,37 @@ export default function Sidebar() {
 
   return (
     <>
-      {/* Mobile Toggle Button */}
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="md:hidden fixed bottom-6 right-6 z-50 w-14 h-14 bg-sky-500 dark:bg-blue-700 text-white rounded-full shadow-lg flex items-center justify-center text-2xl"
-      >
-        <i className={isOpen ? 'ri-close-line' : 'ri-menu-line'}></i>
-      </button>
-
-      {/* Overlay */}
-      {isOpen && (
+      {/* Mobile Overlay */}
+      {isMobileOpen && (
         <div
-          onClick={() => setIsOpen(false)}
-          className="md:hidden fixed inset-0 bg-black/50 z-40"
+          onClick={() => setMobileOpen(false)}
+          className="md:hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-40 animate-fade-in"
         />
       )}
 
       {/* Sidebar */}
-      <aside 
+      <aside
         className={`
-          glass border-r border-gray-200/50 dark:border-slate-800/50 h-[calc(100vh-5rem)]
-          fixed top-20 left-0 z-40 transition-transform duration-300 ease-in-out
-          ${isOpen ? 'translate-x-0' : '-translate-x-full'}
-          md:translate-x-0 md:sticky md:top-20
+          glass border-r border-gray-200/50 dark:border-slate-800/50 
+          fixed md:sticky top-0 md:top-20 left-0 z-50 md:z-40
+          h-screen md:h-[calc(100vh-5rem)]
+          transition-transform duration-300 ease-out
+          ${isMobileOpen ? 'translate-x-0' : '-translate-x-full'}
+          md:translate-x-0
         `}
         style={{ width: isCollapsed ? '80px' : `${sidebarWidth}px` }}
       >
+        {/* Mobile Header */}
+        <div className="md:hidden h-16 flex items-center justify-between px-4 border-b border-gray-200/50 dark:border-slate-800/50">
+          <span className="font-bold text-lg text-sky-600 dark:text-blue-400">Menu</span>
+          <button
+            onClick={() => setMobileOpen(false)}
+            className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800"
+          >
+            <i className="ri-close-line text-xl"></i>
+          </button>
+        </div>
+
         {/* Resize Handle */}
         {!isCollapsed && (
           <div
@@ -100,19 +104,19 @@ export default function Sidebar() {
             <div className="absolute right-0 top-1/2 -translate-y-1/2 w-1 h-12 bg-sky-500 dark:bg-blue-700 rounded-l opacity-0 group-hover:opacity-100 transition-opacity" />
           </div>
         )}
-        <nav className="p-3 space-y-2 h-full overflow-y-auto scrollbar-thin">
+
+        <nav className="p-3 space-y-2 h-[calc(100%-4rem)] md:h-full overflow-y-auto scrollbar-thin">
           {links
             .filter(link => link.roles.includes(user?.role || ''))
             .map(link => (
               <Link
                 key={link.href}
                 href={link.href}
-                onClick={() => setIsOpen(false)}
-                className={`flex items-center gap-4 px-3 py-3 rounded-xl transition-all group ${
-                  pathname === link.href
-                    ? 'bg-sky-500 dark:bg-blue-600 text-white shadow-md'
-                    : 'hover:bg-slate-100 dark:hover:bg-slate-800/60'
-                }`}
+                onClick={() => setMobileOpen(false)}
+                className={`flex items-center gap-4 px-3 py-3 rounded-xl transition-all group ${pathname === link.href
+                    ? 'bg-sky-500 dark:bg-blue-600 text-white shadow-md shadow-sky-500/20'
+                    : 'hover:bg-slate-100 dark:hover:bg-slate-800/60 text-gray-600 dark:text-gray-300 hover:text-sky-600 dark:hover:text-blue-400'
+                  }`}
               >
                 <i className={`${link.icon} text-xl shrink-0`}></i>
                 {!isCollapsed && (

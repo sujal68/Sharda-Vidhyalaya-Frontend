@@ -9,7 +9,7 @@ export default function Register() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    phone: '',
+    mobile: '',
     password: '',
     role: 'student',
     class: '',
@@ -17,10 +17,79 @@ export default function Register() {
     rollNumber: '',
   });
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState<any>({});
   const router = useRouter();
+
+  const validateForm = () => {
+    const newErrors: any = {};
+
+    // Name validation
+    if (!formData.name.trim()) {
+      newErrors.name = 'Name is required';
+    } else if (formData.name.length < 2) {
+      newErrors.name = 'Name must be at least 2 characters';
+    }
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!formData.email) {
+      newErrors.email = 'Email is required';
+    } else if (!emailRegex.test(formData.email)) {
+      newErrors.email = 'Please enter a valid email';
+    }
+
+    // Mobile validation
+    const mobileRegex = /^[6-9]\d{9}$/;
+    if (!formData.mobile) {
+      newErrors.mobile = 'Mobile number is required';
+    } else if (formData.mobile.length !== 10) {
+      newErrors.mobile = 'Mobile number must be exactly 10 digits';
+    } else if (!mobileRegex.test(formData.mobile)) {
+      newErrors.mobile = 'Please enter a valid Indian mobile number';
+    }
+
+    // Password validation
+    if (!formData.password) {
+      newErrors.password = 'Password is required';
+    } else if (formData.password.length < 6) {
+      newErrors.password = 'Password must be at least 6 characters';
+    }
+
+    // Student specific validations
+    if (formData.role === 'student') {
+      if (!formData.class.trim()) {
+        newErrors.class = 'Class is required for students';
+      }
+      if (!formData.section.trim()) {
+        newErrors.section = 'Section is required for students';
+      }
+      if (!formData.rollNumber.trim()) {
+        newErrors.rollNumber = 'Roll number is required for students';
+      }
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleMobileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/\D/g, ''); // Only digits
+    if (value.length <= 10) {
+      setFormData({ ...formData, mobile: value });
+      if (errors.mobile) {
+        setErrors({ ...errors, mobile: '' });
+      }
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!validateForm()) {
+      toast.error('Please fix the errors in the form');
+      return;
+    }
+
     setLoading(true);
     try {
       await api.post('/auth/register', formData);
@@ -48,51 +117,71 @@ export default function Register() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium mb-2">Full Name</label>
+              <label className="block text-sm font-medium mb-2">Full Name *</label>
               <input
                 type="text"
                 value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                className="input"
-                required
+                onChange={(e) => {
+                  setFormData({ ...formData, name: e.target.value });
+                  if (errors.name) setErrors({ ...errors, name: '' });
+                }}
+                className={`input ${errors.name ? 'border-red-500 focus:ring-red-500' : ''}`}
+                placeholder="Enter your full name"
               />
+              {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2">Email</label>
+              <label className="block text-sm font-medium mb-2">Email *</label>
               <input
                 type="email"
                 value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                className="input"
-                required
+                onChange={(e) => {
+                  setFormData({ ...formData, email: e.target.value });
+                  if (errors.email) setErrors({ ...errors, email: '' });
+                }}
+                className={`input ${errors.email ? 'border-red-500 focus:ring-red-500' : ''}`}
+                placeholder="Enter your email"
               />
+              {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2">Phone</label>
-              <input
-                type="tel"
-                value={formData.phone}
-                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                className="input"
-                required
-              />
+              <label className="block text-sm font-medium mb-2">Mobile Number *</label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <span className="text-gray-500 text-sm">+91</span>
+                </div>
+                <input
+                  type="tel"
+                  value={formData.mobile}
+                  onChange={handleMobileChange}
+                  className={`input pl-12 ${errors.mobile ? 'border-red-500 focus:ring-red-500' : ''}`}
+                  placeholder="9876543210"
+                  maxLength={10}
+                />
+              </div>
+              {errors.mobile && <p className="text-red-500 text-xs mt-1">{errors.mobile}</p>}
+              <p className="text-xs text-gray-500 mt-1">Enter 10-digit mobile number</p>
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2">Password</label>
+              <label className="block text-sm font-medium mb-2">Password *</label>
               <input
                 type="password"
                 value={formData.password}
-                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                className="input"
-                required
+                onChange={(e) => {
+                  setFormData({ ...formData, password: e.target.value });
+                  if (errors.password) setErrors({ ...errors, password: '' });
+                }}
+                className={`input ${errors.password ? 'border-red-500 focus:ring-red-500' : ''}`}
+                placeholder="Enter password (min 6 characters)"
               />
+              {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>}
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2">Role</label>
+              <label className="block text-sm font-medium mb-2">Role *</label>
               <select
                 value={formData.role}
                 onChange={(e) => setFormData({ ...formData, role: e.target.value })}
@@ -106,40 +195,62 @@ export default function Register() {
             {formData.role === 'student' && (
               <>
                 <div>
-                  <label className="block text-sm font-medium mb-2">Class</label>
+                  <label className="block text-sm font-medium mb-2">Class *</label>
                   <input
                     type="text"
                     value={formData.class}
-                    onChange={(e) => setFormData({ ...formData, class: e.target.value })}
-                    className="input"
+                    onChange={(e) => {
+                      setFormData({ ...formData, class: e.target.value });
+                      if (errors.class) setErrors({ ...errors, class: '' });
+                    }}
+                    className={`input ${errors.class ? 'border-red-500 focus:ring-red-500' : ''}`}
+                    placeholder="e.g., 10th, 12th"
                   />
+                  {errors.class && <p className="text-red-500 text-xs mt-1">{errors.class}</p>}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2">Section</label>
+                  <label className="block text-sm font-medium mb-2">Section *</label>
                   <input
                     type="text"
                     value={formData.section}
-                    onChange={(e) => setFormData({ ...formData, section: e.target.value })}
-                    className="input"
+                    onChange={(e) => {
+                      setFormData({ ...formData, section: e.target.value });
+                      if (errors.section) setErrors({ ...errors, section: '' });
+                    }}
+                    className={`input ${errors.section ? 'border-red-500 focus:ring-red-500' : ''}`}
+                    placeholder="e.g., A, B, C"
                   />
+                  {errors.section && <p className="text-red-500 text-xs mt-1">{errors.section}</p>}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2">Roll Number</label>
+                  <label className="block text-sm font-medium mb-2">Roll Number *</label>
                   <input
                     type="text"
                     value={formData.rollNumber}
-                    onChange={(e) => setFormData({ ...formData, rollNumber: e.target.value })}
-                    className="input"
+                    onChange={(e) => {
+                      setFormData({ ...formData, rollNumber: e.target.value });
+                      if (errors.rollNumber) setErrors({ ...errors, rollNumber: '' });
+                    }}
+                    className={`input ${errors.rollNumber ? 'border-red-500 focus:ring-red-500' : ''}`}
+                    placeholder="Enter roll number"
                   />
+                  {errors.rollNumber && <p className="text-red-500 text-xs mt-1">{errors.rollNumber}</p>}
                 </div>
               </>
             )}
           </div>
 
           <button type="submit" disabled={loading} className="btn-primary w-full">
-            {loading ? 'Registering...' : 'Register'}
+            {loading ? (
+              <div className="flex items-center justify-center gap-2">
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                Registering...
+              </div>
+            ) : (
+              'Register'
+            )}
           </button>
         </form>
 
