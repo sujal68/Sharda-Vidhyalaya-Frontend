@@ -20,7 +20,7 @@ function OTPInput({ value, onChange, length = 6 }: { value: string; onChange: (v
 
   const handleChange = (index: number, val: string) => {
     if (!/^\d*$/.test(val)) return;
-    
+
     const newOtp = [...otp];
     newOtp[index] = val.slice(-1);
     setOtp(newOtp);
@@ -42,14 +42,14 @@ function OTPInput({ value, onChange, length = 6 }: { value: string; onChange: (v
     e.preventDefault();
     const pastedData = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, length);
     const newOtp = Array(length).fill('');
-    
+
     for (let i = 0; i < pastedData.length; i++) {
       newOtp[i] = pastedData[i];
     }
-    
+
     setOtp(newOtp);
     onChange(newOtp.join(''));
-    
+
     const nextEmptyIndex = newOtp.findIndex(val => !val);
     const focusIndex = nextEmptyIndex === -1 ? length - 1 : nextEmptyIndex;
     inputRefs.current[focusIndex]?.focus();
@@ -60,7 +60,9 @@ function OTPInput({ value, onChange, length = 6 }: { value: string; onChange: (v
       {otp.map((digit, index) => (
         <input
           key={index}
-          ref={(el) => (inputRefs.current[index] = el)}
+          ref={(el: HTMLInputElement | null) => {
+            inputRefs.current[index] = el;
+          }}
           type="text"
           value={digit}
           onChange={(e) => handleChange(index, e.target.value)}
@@ -101,7 +103,7 @@ function ForgotPasswordModal({ show, setShow }: { show: boolean; setShow: (show:
       toast.error('Please enter email');
       return;
     }
-    
+
     setLoading(true);
     try {
       await api.post('/auth/forgot-password', { email });
@@ -130,7 +132,7 @@ function ForgotPasswordModal({ show, setShow }: { show: boolean; setShow: (show:
       toast.error('Password must be at least 6 characters');
       return;
     }
-    
+
     setLoading(true);
     try {
       await api.post('/auth/reset-password', { email, otp, newPassword });
@@ -229,19 +231,19 @@ export default function Login() {
 
   const validateLogin = () => {
     const newErrors: any = {};
-    
+
     if (!email.trim()) {
       newErrors.email = 'Email is required';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       newErrors.email = 'Please enter a valid email';
     }
-    
+
     if (!password.trim()) {
       newErrors.password = 'Password is required';
     } else if (password.length < 6) {
       newErrors.password = 'Password must be at least 6 characters';
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -261,12 +263,12 @@ export default function Login() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateLogin()) {
       toast.error('Please fix the errors in the form');
       return;
     }
-    
+
     setLoading(true);
     try {
       await api.post('/auth/login', { email, password });
@@ -282,7 +284,7 @@ export default function Login() {
 
   const handleResendOTP = async () => {
     if (countdown > 0) return;
-    
+
     setLoading(true);
     try {
       await api.post('/auth/login', { email, password });
@@ -297,12 +299,12 @@ export default function Login() {
 
   const handleVerifyOTP = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (otp.length !== 6) {
       toast.error('Please enter complete 6-digit OTP');
       return;
     }
-    
+
     setLoading(true);
     try {
       const { data } = await api.post('/auth/verify-otp', { email, otp });
@@ -436,7 +438,7 @@ export default function Login() {
                 />
                 {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
               </div>
-              
+
               <div>
                 <label className="block text-sm font-medium mb-2">Password *</label>
                 <input
